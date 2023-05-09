@@ -1,5 +1,18 @@
+import { styled } from "styled-components";
+import ContentTitle from "./ContentTitle";
+
 const Home = () => {
-  return <h1>This is Home</h1>;
+  const title = "Great People";
+
+  return (
+    <Wrapper>
+      <ContentTitle title={title} />
+    </Wrapper>
+  );
 };
 
 export default Home;
+
+const Wrapper = styled.div`
+  padding: 20px;
+`;
