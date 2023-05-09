@@ -1,6 +1,27 @@
 import { Link } from "react-router-dom";
 import { styled } from "styled-components";
 
+const Header = () => {
+  return (
+    <StyledHeader>
+      <StyledLink to={"/web"}>
+        <div className="header header_left">
+          <span className="menu_name" id="menu_home">
+            HOME
+          </span>
+        </div>
+      </StyledLink>
+      <StyledLink to={"/web/signup"}>
+        <div className="header header_right">
+          <span className="menu_name" id="menu_signup">
+            SIGNUP
+          </span>
+        </div>
+      </StyledLink>
+    </StyledHeader>
+  );
+};
+
 const StyledHeader = styled.header`
   display: flex;
   height: 60px;
@@ -23,26 +44,5 @@ const StyledLink = styled(Link)`
   text-decoration: none;
   color: white;
 `;
-
-const Header = () => {
-  return (
-    <StyledHeader>
-      <StyledLink to={"/web"}>
-        <div className="header header_left">
-          <span className="menu_name" id="menu_home">
-            HOME
-          </span>
-        </div>
-      </StyledLink>
-      <StyledLink to={"/web/signup"}>
-        <div className="header header_right">
-          <span className="menu_name" id="menu_signup">
-            SIGNUP
-          </span>
-        </div>
-      </StyledLink>
-    </StyledHeader>
-  );
-};
 
 export default Header;
