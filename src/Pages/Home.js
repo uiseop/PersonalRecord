@@ -1,5 +1,5 @@
 import { styled } from "styled-components";
-import ContentTitle from "./ContentTitle";
+import ContentTitle from "../Components/ContentTitle";
 
 const Home = () => {
   const title = "Great People";

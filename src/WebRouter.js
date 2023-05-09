@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router-dom";
-import Home from "./Components/Home";
-import Signup from "./Components/Signup";
+import Home from "./Pages/Home";
+import Signup from "./Pages/Signup";
 
 const WebRouter = () => {
   return (
