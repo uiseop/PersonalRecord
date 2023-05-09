@@ -1,11 +1,11 @@
-/** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
 import { Link } from "react-router-dom";
+import { styled } from "styled-components";
 
-const headerStyle = css`
+const StyledHeader = styled.header`
   display: flex;
   height: 60px;
   align-items: center;
+  justify-content: space-between;
   font-size: 1.5em;
   font-family: "Bebas Neue", cursive;
   background: #29323c;
@@ -18,24 +18,30 @@ const headerStyle = css`
   color: white;
 `;
 
+const StyledLink = styled(Link)`
+  margin: 0px 15px;
+  text-decoration: none;
+  color: white;
+`;
+
 const Header = () => {
   return (
-    <header css={headerStyle}>
-      <Link to={"/web"}>
-        <div class="header header_left">
-          <span class="menu_name" id="menu_home">
+    <StyledHeader>
+      <StyledLink to={"/web"}>
+        <div className="header header_left">
+          <span className="menu_name" id="menu_home">
             HOME
           </span>
         </div>
-      </Link>
-      <Link to={"/web/signup"}>
-        <div class="header header_right">
-          <span class="menu_name" id="menu_signup">
+      </StyledLink>
+      <StyledLink to={"/web/signup"}>
+        <div className="header header_right">
+          <span className="menu_name" id="menu_signup">
             SIGNUP
           </span>
         </div>
-      </Link>
-    </header>
+      </StyledLink>
+    </StyledHeader>
   );
 };
 
