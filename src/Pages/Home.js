@@ -1,5 +1,7 @@
 import { styled } from "styled-components";
 import ContentTitle from "../Components/ContentTitle";
+import Cards from "../Components/Cards";
+import { Suspense } from "react";
 
 const Home = () => {
   const title = "Great People";
@@ -7,6 +9,9 @@ const Home = () => {
   return (
     <Wrapper>
       <ContentTitle title={title} />
+      <Suspense fallback={<div>...loading</div>}>
+        <Cards />
+      </Suspense>
     </Wrapper>
   );
 };
