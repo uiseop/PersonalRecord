@@ -8,19 +8,20 @@ const BASE_URL = "https://jsonplaceholder.typicode.com";
 const client = axios.create({ baseURL: BASE_URL });
 
 const Cards = () => {
-  const {
-    data: { data },
-  } = useQuery("cards", () => client.get("/users"), {
-    suspense: true,
-  });
-
   const [cardLists, setCardLists] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
-    setCardLists(data);
+    setIsLoading(true);
+    client.get(`/todos?_page=${page}`).then(({ data }) => {
+      setIsLoading(false);
+      setCardLists(data);
+      setPage((cur) => cur + 1);
+    });
   }, []);
 
-  const onClickHandler = (card, index) => {
+  const onClickHandler = (index) => {
     const cards = [...cardLists];
     cards[index].isFlipped = !cards[index].isFlipped;
     setCardLists(cards);
@@ -28,22 +29,26 @@ const Cards = () => {
 
   return (
     <CardsWrapper>
-      {cardLists?.map((card, index) => {
-        return (
-          <Card
-            key={card.id}
-            flipped={card.isFlipped ? "true" : ""}
-            onClick={() => onClickHandler(card, index)}
-          >
-            <CardPlane front="true">
-              <span>{card.username}</span>
-            </CardPlane>
-            <CardPlane back="true">
-              <span>{card.email}</span>
-            </CardPlane>
-          </Card>
-        );
-      })}
+      {isLoading ? (
+        <div>Loading...</div>
+      ) : (
+        cardLists?.map((card, index) => {
+          return (
+            <Card
+              key={card.id}
+              flipped={card.isFlipped ? "true" : ""}
+              onClick={() => onClickHandler(index)}
+            >
+              <CardPlane front="true">
+                <span>{card.title}</span>
+              </CardPlane>
+              <CardPlane back="true">
+                <span>{String(card.completed)}</span>
+              </CardPlane>
+            </Card>
+          );
+        })
+      )}
     </CardsWrapper>
   );
 };
