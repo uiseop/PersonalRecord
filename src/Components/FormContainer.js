@@ -1,10 +1,10 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { styled } from "styled-components";
 import Select from "./Select";
 
-const NAME_VALIDATION = "^[가-힣ㄱ-ㅎ]{2,4}$";
-const EMAIL_VALIDATION = "^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$";
-const NICKNAME_VALIDATION = "^[a-zA-Z]{3,10}$";
+const NAME_VALIDATION = /^[가-힣ㄱ-ㅎ]{2,4}$/;
+const EMAIL_VALIDATION = /^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$/;
+const NICKNAME_VALIDATION = /^[a-zA-Z]{3,10}$/;
 
 const NAME_MESSAGE = "2~4 글자의 한글만 입력이 가능합니다.";
 const EMAIL_MESSAGE =
@@ -31,44 +31,68 @@ const messages = {
 };
 
 const FormContainer = () => {
-  const name = useRef(null);
-  const email = useRef(null);
-  const nickname = useRef(null);
+  const nameInput = useRef(null);
+  const emailInput = useRef(null);
+  const nicknameInput = useRef(null);
 
-  const validation = (target) => {
-    const cur = target.current;
-    if (!cur) return false;
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [nickname, setNickname] = useState("");
 
-    const key = keys[cur.id];
-    const regex = RegExp(valids[key.valid]);
-    if (regex.test(cur.value)) return true;
-    return false;
+  const onChangeName = ({ target }) => {
+    const { value } = target;
+    setName(value);
   };
+
+  const onChangeEmail = ({ target }) => {
+    const { value } = target;
+    setEmail(value);
+  };
+
+  const onChangeNickname = ({ target }) => {
+    const { value } = target;
+    setNickname(value);
+  };
+
+  const [isNameValid, setIsNameValid] = useState(null);
+  const [isEmailValid, setIsEmailValid] = useState(null);
+  const [isNicknameValid, setIsNicknameValid] = useState(null);
+
+  const checkNameValid = (name) => {
+    if (NAME_VALIDATION.test(name)) return setIsNameValid(true);
+    return setIsNameValid(false);
+  };
+
+  const checkEmailValid = (email) => {
+    if (EMAIL_VALIDATION.test(email)) return setIsEmailValid(true);
+    return setIsEmailValid(false);
+  };
+
+  const checkNicknameValid = (nickname) => {
+    if (NICKNAME_VALIDATION.test(nickname)) return setIsNicknameValid(true);
+    return setIsNicknameValid(false);
+  };
+
+  useEffect(() => {
+    if (name) {
+      checkNameValid(name);
+    }
+  }, [name]);
+
+  useEffect(() => {
+    if (email) {
+      checkEmailValid(email);
+    }
+  }, [email]);
+
+  useEffect(() => {
+    if (nickname) {
+      checkNicknameValid(nickname);
+    }
+  }, [nickname]);
 
   const onSubmit = (e) => {
     e.preventDefault();
-    const isValidName = validation(name);
-    const isValidEmail = validation(email);
-    const isValidNickname = validation(nickname);
-
-    if (isValidName && isValidEmail && isValidNickname) {
-      alert("Hello!!");
-      name.current.value = "";
-      email.current.value = "";
-      nickname.current.value = "";
-    }
-
-    if (!isValidName) {
-      console.log(messages[keys["name"].message]);
-    }
-
-    if (!isValidEmail) {
-      console.log(messages[keys["email"].message]);
-    }
-
-    if (!isValidNickname) {
-      console.log(messages[keys["nickname"].message]);
-    }
   };
 
   const roleOptions = [
@@ -92,21 +116,42 @@ const FormContainer = () => {
           이름
           <Required>(필수*)</Required>
         </Label>
-        <Input required id="name" placeholder="이름" ref={name} />
+        <Input
+          onChange={onChangeName}
+          required
+          id="name"
+          placeholder="이름"
+          ref={nameInput}
+        />
+        {isNameValid === false ? <p>{NAME_MESSAGE}</p> : ""}
       </FormElem>
       <FormElem>
         <Label htmlFor="email">
           이메일
           <Required>(필수*)</Required>
         </Label>
-        <Input required id="email" placeholder="이메일" ref={email} />
+        <Input
+          onChange={onChangeEmail}
+          required
+          id="email"
+          placeholder="이메일"
+          ref={emailInput}
+        />
+        {isEmailValid === false ? <p>{EMAIL_MESSAGE}</p> : ""}
       </FormElem>
       <FormElem>
         <Label htmlFor="nickName">
           닉네임
           <Required>(필수*)</Required>
         </Label>
-        <Input required id="nickname" placeholder="닉네임" ref={nickname} />
+        <Input
+          onChange={onChangeNickname}
+          required
+          id="nickname"
+          placeholder="닉네임"
+          ref={nicknameInput}
+        />
+        {isNicknameValid === false ? <p>{NICKNAME_MESSAGE}</p> : ""}
       </FormElem>
       <FormElem>
         <Label htmlFor="role">
