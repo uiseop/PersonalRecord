@@ -8,7 +8,6 @@ const useIntersectionObserver = (callback) => {
   const observer = useRef(new IntersectionObserver(ioCallback, option));
 
   function ioCallback(entries) {
-    console.log(entries, "haha", entries.length);
     entries.forEach((entry) => {
       if (!entry.isIntersecting) return;
       callback();

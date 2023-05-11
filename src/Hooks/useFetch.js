@@ -15,7 +15,6 @@ const useFetch = (client, url, isPaging) => {
     client
       .get(url)
       .then(({ data }) => {
-        console.log(data, "haha");
         setPage((cur) => cur + 1);
         setIsLoading(false);
         setFetchedData((cur) => [...cur, ...data]);
