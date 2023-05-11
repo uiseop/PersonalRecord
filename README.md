@@ -9,6 +9,8 @@
 ## 무한 스크롤 구현
 - Scroll Event로 구현의 한계를 해결하고자 `Intersection Oberserver API`를 사용해서 구현해보았습니다.
 
+### 문제 1) 화면을 Zoom-Out 했을 때는 스크롤이 생기지 않아 target 요소를 확인하지 못함
+
 ## Form 구현
 1. `useRef`로 구현
   - `useRef`만을 사용하여 사용자의 입력의 Valid를 단순히 `submit` 이벤트가 발생했을 때에만 확인. Valid 확인 메시지는 input 요소의 `setAttribute`를 통해 설정
