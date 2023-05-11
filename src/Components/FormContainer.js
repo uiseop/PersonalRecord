@@ -1,42 +1,23 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { styled } from "styled-components";
 import Select from "./Select";
-import useValidInput from "../Hooks/useValidInput";
-
-const NAME_VALIDATION = /^[가-힣ㄱ-ㅎ]{2,4}$/;
-const EMAIL_VALIDATION = /^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$/;
-const NICKNAME_VALIDATION = /^[a-zA-Z]{3,10}$/;
-
-const NAME_MESSAGE = "2~4 글자의 한글만 입력이 가능합니다.";
-const EMAIL_MESSAGE =
-  "이메일 ID는 영문(대소문자 구분 없음)과 숫자만 입력이 가능하며, @grepp.co 형식의 이메일만 입력이 가능합니다.";
-const NICKNAME_MESSAGE =
-  "대소문자 구분 없이 3~10 글자의 영문만 입력이 가능합니다.";
+import useForms from "../Hooks/useForms";
+import validate from "../data/validate";
 
 const FormContainer = () => {
   const nameInput = useRef(null);
   const emailInput = useRef(null);
   const nicknameInput = useRef(null);
 
-  const [name, isNameValid, onNameChange] = useValidInput(NAME_VALIDATION);
-  const [email, isEmailValid, onEmailChange] = useValidInput(EMAIL_VALIDATION);
-  const [nickName, isNicknameValid, onNicknameChange] =
-    useValidInput(NICKNAME_VALIDATION);
-
-  const [isValid, setIsValid] = useState(false);
-
-  const checkIsAllValid = () => {
-    if (isNameValid && isEmailValid && isNicknameValid) return setIsValid(true);
-    return setIsValid(false);
-  };
-
-  useEffect(() => {
-    checkIsAllValid();
-  }, [isNameValid, isEmailValid, isNicknameValid]);
-
-  const onSubmit = (e) => {
-    e.preventDefault();
-  };
+  const { values, errors, isSubmitting, handleChange, handleSubmit } = useForms(
+    {
+      initialValues: { name: "", email: "", nickname: "" },
+      onSubmit: (values) => {
+        alert(JSON.stringify(values, null, 2));
+      },
+      validate,
+    }
+  );
 
   const roleOptions = [
     { value: "", name: "직군을 선택해주세요" },
@@ -53,20 +34,22 @@ const FormContainer = () => {
   ];
 
   return (
-    <Form onSubmit={onSubmit}>
+    <Form onSubmit={handleSubmit}>
       <FormElem>
         <Label htmlFor="name">
           이름
           <Required>(필수*)</Required>
         </Label>
         <Input
-          onChange={onNameChange}
+          onChange={handleChange}
           required
           id="name"
+          name="name"
           placeholder="이름"
           ref={nameInput}
+          value={values.name}
         />
-        {isNameValid === false ? <p>{NAME_MESSAGE}</p> : ""}
+        {errors.name && <p>{errors.name}</p>}
       </FormElem>
       <FormElem>
         <Label htmlFor="email">
@@ -74,13 +57,15 @@ const FormContainer = () => {
           <Required>(필수*)</Required>
         </Label>
         <Input
-          onChange={onEmailChange}
+          onChange={handleChange}
           required
           id="email"
+          name="email"
           placeholder="이메일"
           ref={emailInput}
+          value={values.email}
         />
-        {isEmailValid === false ? <p>{EMAIL_MESSAGE}</p> : ""}
+        {errors.email && <p>{errors.email}</p>}
       </FormElem>
       <FormElem>
         <Label htmlFor="nickName">
@@ -88,13 +73,15 @@ const FormContainer = () => {
           <Required>(필수*)</Required>
         </Label>
         <Input
-          onChange={onNicknameChange}
+          onChange={handleChange}
           required
           id="nickname"
+          name="nickname"
           placeholder="닉네임"
           ref={nicknameInput}
+          value={values.nickname}
         />
-        {isNicknameValid === false ? <p>{NICKNAME_MESSAGE}</p> : ""}
+        {errors.nickname && <p>{errors.nickname}</p>}
       </FormElem>
       <FormElem>
         <Label htmlFor="role">
@@ -108,7 +95,7 @@ const FormContainer = () => {
         <Select id="mbti" name="mbti" options={mbtiOptions} />
       </FormElem>
       <FormElem>
-        <Button disabled={!isValid} type="submit">
+        <Button disabled={Object.keys(errors).length === 0} type="submit">
           등록
         </Button>
       </FormElem>
