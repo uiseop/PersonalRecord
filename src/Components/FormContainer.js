@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { styled } from "styled-components";
+import Select from "./Select";
 
 const PATTERN = "pattern";
 const TITLE = "title";
@@ -43,6 +44,20 @@ const FormContainer = () => {
     }
   }, [nickName]);
 
+  const roleOptions = [
+    { value: "", name: "직군을 선택해주세요" },
+    { value: "backend", name: "백엔드" },
+    { value: "frontend", name: "프론트엔드" },
+    { value: "fullstack", name: "풀스택" },
+  ];
+
+  const mbtiOptions = [
+    { value: "", name: "MBTI를 선택해주세요" },
+    { value: "backend", name: "백엔드" },
+    { value: "frontend", name: "프론트엔드" },
+    { value: "fullstack", name: "풀스택" },
+  ];
+
   return (
     <Wrapper>
       <FormElem>
@@ -71,21 +86,11 @@ const FormContainer = () => {
           직군
           <Required>(필수*)</Required>
         </Label>
-        <Select id="role" name="role">
-          <option value="">직군을 선택해주세요</option>
-          <option value="backend">백엔드</option>
-          <option value="frontend">프론트엔드</option>
-          <option value="fullstack">풀스택</option>
-        </Select>
+        <Select id="role" name="role" options={roleOptions} />
       </FormElem>
       <FormElem>
         <Label htmlFor="mbti">MBTI</Label>
-        <Select id="mbti" name="mbti">
-          <option value="">MBTI를 선택해주세요</option>
-          <option value="backend">백엔드</option>
-          <option value="frontend">프론트엔드</option>
-          <option value="fullstack">풀스택</option>
-        </Select>
+        <Select id="mbti" name="mbti" options={mbtiOptions} />
       </FormElem>
       <FormElem>
         <Button type="submit">등록</Button>
@@ -118,15 +123,6 @@ const Required = styled.span`
 `;
 
 const Input = styled.input`
-  width: 100%;
-  padding: 1em;
-  border: solid 1.5px #9e9e9e;
-  border-radius: 1rem;
-  box-sizing: border-box;
-  background: none;
-`;
-
-const Select = styled.select`
   width: 100%;
   padding: 1em;
   border: solid 1.5px #9e9e9e;
