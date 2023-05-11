@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { styled } from "styled-components";
 import Select from "./Select";
+import useValidInput from "../Hooks/useValidInput";
 
 const NAME_VALIDATION = /^[가-힣ㄱ-ㅎ]{2,4}$/;
 const EMAIL_VALIDATION = /^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$/;
@@ -35,61 +36,10 @@ const FormContainer = () => {
   const emailInput = useRef(null);
   const nicknameInput = useRef(null);
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [nickname, setNickname] = useState("");
-
-  const onChangeName = ({ target }) => {
-    const { value } = target;
-    setName(value);
-  };
-
-  const onChangeEmail = ({ target }) => {
-    const { value } = target;
-    setEmail(value);
-  };
-
-  const onChangeNickname = ({ target }) => {
-    const { value } = target;
-    setNickname(value);
-  };
-
-  const [isNameValid, setIsNameValid] = useState(null);
-  const [isEmailValid, setIsEmailValid] = useState(null);
-  const [isNicknameValid, setIsNicknameValid] = useState(null);
-
-  const checkNameValid = (name) => {
-    if (NAME_VALIDATION.test(name)) return setIsNameValid(true);
-    return setIsNameValid(false);
-  };
-
-  const checkEmailValid = (email) => {
-    if (EMAIL_VALIDATION.test(email)) return setIsEmailValid(true);
-    return setIsEmailValid(false);
-  };
-
-  const checkNicknameValid = (nickname) => {
-    if (NICKNAME_VALIDATION.test(nickname)) return setIsNicknameValid(true);
-    return setIsNicknameValid(false);
-  };
-
-  useEffect(() => {
-    if (name) {
-      checkNameValid(name);
-    }
-  }, [name]);
-
-  useEffect(() => {
-    if (email) {
-      checkEmailValid(email);
-    }
-  }, [email]);
-
-  useEffect(() => {
-    if (nickname) {
-      checkNicknameValid(nickname);
-    }
-  }, [nickname]);
+  const [name, isNameValid, onNameChange] = useValidInput(NAME_VALIDATION);
+  const [email, isEmailValid, onEmailChange] = useValidInput(EMAIL_VALIDATION);
+  const [nickName, isNicknameValid, onNicknameChange] =
+    useValidInput(NICKNAME_VALIDATION);
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -117,7 +67,7 @@ const FormContainer = () => {
           <Required>(필수*)</Required>
         </Label>
         <Input
-          onChange={onChangeName}
+          onChange={onNameChange}
           required
           id="name"
           placeholder="이름"
@@ -131,7 +81,7 @@ const FormContainer = () => {
           <Required>(필수*)</Required>
         </Label>
         <Input
-          onChange={onChangeEmail}
+          onChange={onEmailChange}
           required
           id="email"
           placeholder="이메일"
@@ -145,7 +95,7 @@ const FormContainer = () => {
           <Required>(필수*)</Required>
         </Label>
         <Input
-          onChange={onChangeNickname}
+          onChange={onNicknameChange}
           required
           id="nickname"
           placeholder="닉네임"
