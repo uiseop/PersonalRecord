@@ -19,6 +19,7 @@ const Cards = () => {
     client
       .get(`${BASE_URL}${URL}${page}`)
       .then(({ data }) => {
+        if (page === 3) throw new Error("여기서 에러 발생!");
         setCards((prev) => [...prev, ...data]);
         setIsLoading(false);
       })
