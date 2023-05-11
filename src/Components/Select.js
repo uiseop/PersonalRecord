@@ -1,7 +1,6 @@
 import { styled } from "styled-components";
 
 const Select = ({ id, name, options }) => {
-  console.log(id, name, options);
   return (
     <StyledSelect id={id} name={name}>
       {options.map((option) => {
