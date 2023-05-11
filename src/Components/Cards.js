@@ -1,7 +1,7 @@
 import axios from "axios";
 import { styled } from "styled-components";
 import Ellipsis from "../styles/Ellipsis";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import useIntersectionObserver from "../Hooks/useIntersectionObserver";
 
 const BASE_URL = "https://jsonplaceholder.typicode.com";
@@ -12,17 +12,33 @@ const Cards = () => {
   const [cards, setCards] = useState([]);
   const [page, setPage] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(null);
 
-  const fetchCards = useCallback(() => {
+  const fetchCards = useCallback((page) => {
     setIsLoading(true);
-    setPage((prev) => prev + 1);
-    client.get(`${BASE_URL}${URL}${page}`).then(({ data }) => {
-      setCards((prev) => [...prev, ...data]);
-      setIsLoading(false);
-    });
+    client
+      .get(`${BASE_URL}${URL}${page}`)
+      .then(({ data }) => {
+        setCards((prev) => [...prev, ...data]);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        setIsError(err.message);
+        setIsLoading(false);
+      });
   }, []);
 
-  const setObservationTarget = useIntersectionObserver(fetchCards);
+  const loadMore = () => {
+    setPage((prev) => prev + 1);
+  };
+
+  useEffect(() => {
+    if (page) {
+      fetchCards(page);
+    }
+  }, [page]);
+
+  const setObservationTarget = useIntersectionObserver(loadMore);
 
   return (
     <CardsWrapper>
@@ -44,6 +60,7 @@ const Cards = () => {
       })}
       <div ref={setObservationTarget}></div>
       {isLoading ? <div>Loading...</div> : ""}
+      {isError ? <div>Something went wrong..!!!</div> : ""}
     </CardsWrapper>
   );
 };
