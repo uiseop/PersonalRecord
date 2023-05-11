@@ -1,54 +1,49 @@
 import axios from "axios";
-import { useQuery } from "react-query";
 import { styled } from "styled-components";
 import Ellipsis from "../styles/Ellipsis";
-import { useEffect, useState } from "react";
+import { useCallback, useState } from "react";
+import useIntersectionObserver from "../Hooks/useIntersectionObserver";
 
 const BASE_URL = "https://jsonplaceholder.typicode.com";
 const client = axios.create({ baseURL: BASE_URL });
 
 const Cards = () => {
-  const [cardLists, setCardLists] = useState([]);
+  const URL = `/todos?_page=`;
+  const [cards, setCards] = useState([]);
+  const [page, setPage] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-  const [page, setPage] = useState(1);
 
-  useEffect(() => {
+  const fetchCards = useCallback(() => {
     setIsLoading(true);
-    client.get(`/todos?_page=${page}`).then(({ data }) => {
+    setPage((prev) => prev + 1);
+    client.get(`${BASE_URL}${URL}${page}`).then(({ data }) => {
+      setCards((prev) => [...prev, ...data]);
       setIsLoading(false);
-      setCardLists(data);
-      setPage((cur) => cur + 1);
     });
   }, []);
 
-  const onClickHandler = (index) => {
-    const cards = [...cardLists];
-    cards[index].isFlipped = !cards[index].isFlipped;
-    setCardLists(cards);
-  };
+  const setObservationTarget = useIntersectionObserver(fetchCards);
 
   return (
     <CardsWrapper>
-      {isLoading ? (
-        <div>Loading...</div>
-      ) : (
-        cardLists?.map((card, index) => {
-          return (
-            <Card
-              key={card.id}
-              flipped={card.isFlipped ? "true" : ""}
-              onClick={() => onClickHandler(index)}
-            >
-              <CardPlane front="true">
-                <span>{card.title}</span>
-              </CardPlane>
-              <CardPlane back="true">
-                <span>{String(card.completed)}</span>
-              </CardPlane>
-            </Card>
-          );
-        })
-      )}
+      {cards?.map((card, index) => {
+        return (
+          <Card
+            key={index}
+            flipped={card.isFlipped ? "true" : ""}
+            onClick={() => {}}
+          >
+            <CardPlane front="true">
+              <span>{card.title}</span>
+            </CardPlane>
+            <CardPlane back="true">
+              <span>{String(card.completed)}</span>
+            </CardPlane>
+          </Card>
+        );
+      })}
+      <div ref={setObservationTarget}></div>
+      {isLoading ? <div>Loading...</div> : ""}
     </CardsWrapper>
   );
 };

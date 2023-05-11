@@ -9,9 +9,7 @@ const Home = () => {
   return (
     <Wrapper>
       <ContentTitle title={title} />
-      <Suspense fallback={<div>...loading</div>}>
-        <Cards />
-      </Suspense>
+      <Cards />
     </Wrapper>
   );
 };
