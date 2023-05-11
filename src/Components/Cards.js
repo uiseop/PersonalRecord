@@ -52,10 +52,10 @@ const Cards = () => {
           <Card
             key={index}
             flipped={card.isFlipped ? "true" : ""}
-            onClick={() => {}}
+            ref={index === cards.length - 1 ? setObservationTarget : null}
           >
             <CardPlane front="true">
-              <span>{card.title}</span>
+              <span>{card.id}</span>
             </CardPlane>
             <CardPlane back="true">
               <span>{String(card.completed)}</span>
@@ -63,7 +63,7 @@ const Cards = () => {
           </Card>
         );
       })}
-      <div ref={setObservationTarget}></div>
+      <div ref={cards.length === 0 ? setObservationTarget : null}></div>
       {isLoading ? <div>Loading...</div> : ""}
       {isError ? <div>Something went wrong..!!!</div> : ""}
     </CardsWrapper>
