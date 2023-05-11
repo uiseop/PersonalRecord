@@ -13,24 +13,6 @@ const EMAIL_MESSAGE =
 const NICKNAME_MESSAGE =
   "대소문자 구분 없이 3~10 글자의 영문만 입력이 가능합니다.";
 
-const keys = {
-  name: { valid: "NAME_VALIDATION", message: "NAME_MESSAGE" },
-  email: { valid: "EMAIL_VALIDATION", message: "EMAIL_MESSAGE" },
-  nickname: { valid: "NICKNAME_VALIDATION", message: "NICKNAME_MESSAGE" },
-};
-
-const valids = {
-  NAME_VALIDATION,
-  EMAIL_VALIDATION,
-  NICKNAME_VALIDATION,
-};
-
-const messages = {
-  NAME_MESSAGE,
-  EMAIL_MESSAGE,
-  NICKNAME_MESSAGE,
-};
-
 const FormContainer = () => {
   const nameInput = useRef(null);
   const emailInput = useRef(null);
@@ -40,6 +22,17 @@ const FormContainer = () => {
   const [email, isEmailValid, onEmailChange] = useValidInput(EMAIL_VALIDATION);
   const [nickName, isNicknameValid, onNicknameChange] =
     useValidInput(NICKNAME_VALIDATION);
+
+  const [isValid, setIsValid] = useState(false);
+
+  const checkIsAllValid = () => {
+    if (isNameValid && isEmailValid && isNicknameValid) return setIsValid(true);
+    return setIsValid(false);
+  };
+
+  useEffect(() => {
+    checkIsAllValid();
+  }, [isNameValid, isEmailValid, isNicknameValid]);
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -115,7 +108,9 @@ const FormContainer = () => {
         <Select id="mbti" name="mbti" options={mbtiOptions} />
       </FormElem>
       <FormElem>
-        <Button type="submit">등록</Button>
+        <Button disabled={!isValid} type="submit">
+          등록
+        </Button>
       </FormElem>
     </Form>
   );
