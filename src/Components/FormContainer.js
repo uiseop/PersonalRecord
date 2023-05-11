@@ -1,9 +1,6 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { styled } from "styled-components";
 import Select from "./Select";
-
-const PATTERN = "pattern";
-const TITLE = "title";
 
 const NAME_VALIDATION = "^[가-힣ㄱ-ㅎ]{2,4}$";
 const EMAIL_VALIDATION = "^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$";
@@ -15,34 +12,64 @@ const EMAIL_MESSAGE =
 const NICKNAME_MESSAGE =
   "대소문자 구분 없이 3~10 글자의 영문만 입력이 가능합니다.";
 
+const keys = {
+  name: { valid: "NAME_VALIDATION", message: "NAME_MESSAGE" },
+  email: { valid: "EMAIL_VALIDATION", message: "EMAIL_MESSAGE" },
+  nickname: { valid: "NICKNAME_VALIDATION", message: "NICKNAME_MESSAGE" },
+};
+
+const valids = {
+  NAME_VALIDATION,
+  EMAIL_VALIDATION,
+  NICKNAME_VALIDATION,
+};
+
+const messages = {
+  NAME_MESSAGE,
+  EMAIL_MESSAGE,
+  NICKNAME_MESSAGE,
+};
+
 const FormContainer = () => {
   const name = useRef(null);
   const email = useRef(null);
-  const nickName = useRef(null);
+  const nickname = useRef(null);
 
-  useEffect(() => {
-    const curName = name.current;
-    if (curName) {
-      curName.setAttribute(PATTERN, NAME_VALIDATION);
-      curName.setAttribute(TITLE, NAME_MESSAGE);
-    }
-  }, [name]);
+  const validation = (target) => {
+    const cur = target.current;
+    if (!cur) return false;
 
-  useEffect(() => {
-    const curEmail = email.current;
-    if (curEmail) {
-      curEmail.setAttribute(PATTERN, EMAIL_VALIDATION);
-      curEmail.setAttribute(TITLE, EMAIL_MESSAGE);
-    }
-  }, [email]);
+    const key = keys[cur.id];
+    const regex = RegExp(valids[key.valid]);
+    if (regex.test(cur.value)) return true;
+    return false;
+  };
 
-  useEffect(() => {
-    const curNickName = nickName.current;
-    if (curNickName) {
-      curNickName.setAttribute(PATTERN, NICKNAME_VALIDATION);
-      curNickName.setAttribute(TITLE, NICKNAME_MESSAGE);
+  const onSubmit = (e) => {
+    e.preventDefault();
+    const isValidName = validation(name);
+    const isValidEmail = validation(email);
+    const isValidNickname = validation(nickname);
+
+    if (isValidName && isValidEmail && isValidNickname) {
+      alert("Hello!!");
+      name.current.value = "";
+      email.current.value = "";
+      nickname.current.value = "";
     }
-  }, [nickName]);
+
+    if (!isValidName) {
+      console.log(messages[keys["name"].message]);
+    }
+
+    if (!isValidEmail) {
+      console.log(messages[keys["email"].message]);
+    }
+
+    if (!isValidNickname) {
+      console.log(messages[keys["nickname"].message]);
+    }
+  };
 
   const roleOptions = [
     { value: "", name: "직군을 선택해주세요" },
@@ -59,7 +86,7 @@ const FormContainer = () => {
   ];
 
   return (
-    <Wrapper>
+    <Form onSubmit={onSubmit}>
       <FormElem>
         <Label htmlFor="name">
           이름
@@ -79,7 +106,7 @@ const FormContainer = () => {
           닉네임
           <Required>(필수*)</Required>
         </Label>
-        <Input required id="nickName" placeholder="닉네임" ref={nickName} />
+        <Input required id="nickname" placeholder="닉네임" ref={nickname} />
       </FormElem>
       <FormElem>
         <Label htmlFor="role">
@@ -95,11 +122,11 @@ const FormContainer = () => {
       <FormElem>
         <Button type="submit">등록</Button>
       </FormElem>
-    </Wrapper>
+    </Form>
   );
 };
 
-const Wrapper = styled.form`
+const Form = styled.form`
   text-align: center;
   margin: 30px 0px;
 `;
