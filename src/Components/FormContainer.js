@@ -1,42 +1,60 @@
 import { useRef } from "react";
 import { styled } from "styled-components";
 import Select from "./Select";
-import useForms from "../Hooks/useForms";
-import validate from "../data/validate";
 import options from "../data/options";
+import { useForm } from "react-hook-form";
 
 const FormContainer = () => {
   const nameInput = useRef(null);
   const emailInput = useRef(null);
   const nicknameInput = useRef(null);
 
-  const { values, errors, isSubmitting, handleChange, handleSubmit } = useForms(
-    {
-      initialValues: { name: "", email: "", nickname: "" },
-      onSubmit: (values) => {
-        alert(JSON.stringify(values, null, 2));
-      },
-      validate,
-    }
-  );
+  const {
+    register,
+    handleSubmit,
+    formState: { isSubmitting, errors },
+  } = useForm();
+
+  const onSubmit = (data) => {
+    alert(JSON.stringify(data));
+  };
+
+  const nameRegister = register("name", {
+    required: "이름은 필수 입력입니다.",
+    pattern: {
+      value: /^[가-힣ㄱ-ㅎ]{2,4}$/,
+      message: "2~4 글자의 한글만 입력이 가능합니다.",
+    },
+  });
+
+  const emailRegister = register("email", {
+    required: "이메일은 필수 입력입니다.",
+    pattern: {
+      value: /^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$/,
+      message:
+        "이메일 ID는 영문(대소문자 구분 없음)과 숫자만 입력이 가능하며, @grepp.co 형식의 이메일만 입력이 가능합니다.",
+    },
+  });
+
+  const nicknameRegister = register("nickname", {
+    required: "닉네임은 필수 입력입니다.",
+    pattern: {
+      value: /^[a-zA-Z]{3,10}$/,
+      message: "대소문자 구분 없이 3~10 글자의 영문만 입력이 가능합니다.",
+      minLength: 3,
+      maxLength: 10,
+    },
+  });
 
   return (
-    <Form onSubmit={handleSubmit}>
+    <Form onSubmit={handleSubmit(onSubmit)}>
       <FormElem>
         <Label htmlFor="name">
           이름
           <Required>(필수*)</Required>
         </Label>
-        <Input
-          onChange={handleChange}
-          required
-          id="name"
-          name="name"
-          placeholder="이름"
-          ref={nameInput}
-          value={values.name}
-        />
-        {errors.name && <p>{errors.name}</p>}
+        <Input id="name" placeholder="이름" ref={nameInput} {...nameRegister} />
+        {errors.name && <p>{errors.name.message}</p>}
       </FormElem>
       <FormElem>
         <Label htmlFor="email">
@@ -44,15 +62,12 @@ const FormContainer = () => {
           <Required>(필수*)</Required>
         </Label>
         <Input
-          onChange={handleChange}
-          required
           id="email"
-          name="email"
           placeholder="이메일"
           ref={emailInput}
-          value={values.email}
+          {...emailRegister}
         />
-        {errors.email && <p>{errors.email}</p>}
+        {errors.email && <p>{errors.email.message}</p>}
       </FormElem>
       <FormElem>
         <Label htmlFor="nickName">
@@ -60,15 +75,13 @@ const FormContainer = () => {
           <Required>(필수*)</Required>
         </Label>
         <Input
-          onChange={handleChange}
-          required
           id="nickname"
           name="nickname"
           placeholder="닉네임"
           ref={nicknameInput}
-          value={values.nickname}
+          {...nicknameRegister}
         />
-        {errors.nickname && <p>{errors.nickname}</p>}
+        {errors.nickname && <p>{errors.nickname.message}</p>}
       </FormElem>
       <FormElem>
         <Label htmlFor="role">
@@ -82,7 +95,7 @@ const FormContainer = () => {
         <Select id="mbti" name="mbti" options={options.mbtiOptions} />
       </FormElem>
       <FormElem>
-        <Button disabled={Object.keys(errors).length === 0} type="submit">
+        <Button disabled={isSubmitting} type="submit">
           등록
         </Button>
       </FormElem>
