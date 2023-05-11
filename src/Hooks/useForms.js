@@ -7,7 +7,6 @@ const useForms = ({ initialValues, onSubmit, validate }) => {
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    console.log(name, value, "haha");
     setValues({ ...values, [name]: value });
     setErrors(validate(values));
   };

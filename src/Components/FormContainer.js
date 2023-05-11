@@ -3,6 +3,7 @@ import { styled } from "styled-components";
 import Select from "./Select";
 import useForms from "../Hooks/useForms";
 import validate from "../data/validate";
+import options from "../data/options";
 
 const FormContainer = () => {
   const nameInput = useRef(null);
@@ -18,20 +19,6 @@ const FormContainer = () => {
       validate,
     }
   );
-
-  const roleOptions = [
-    { value: "", name: "직군을 선택해주세요" },
-    { value: "backend", name: "백엔드" },
-    { value: "frontend", name: "프론트엔드" },
-    { value: "fullstack", name: "풀스택" },
-  ];
-
-  const mbtiOptions = [
-    { value: "", name: "MBTI를 선택해주세요" },
-    { value: "backend", name: "백엔드" },
-    { value: "frontend", name: "프론트엔드" },
-    { value: "fullstack", name: "풀스택" },
-  ];
 
   return (
     <Form onSubmit={handleSubmit}>
@@ -88,11 +75,11 @@ const FormContainer = () => {
           직군
           <Required>(필수*)</Required>
         </Label>
-        <Select id="role" name="role" options={roleOptions} />
+        <Select id="role" name="role" options={options.roleOptions} />
       </FormElem>
       <FormElem>
         <Label htmlFor="mbti">MBTI</Label>
-        <Select id="mbti" name="mbti" options={mbtiOptions} />
+        <Select id="mbti" name="mbti" options={options.mbtiOptions} />
       </FormElem>
       <FormElem>
         <Button disabled={Object.keys(errors).length === 0} type="submit">
