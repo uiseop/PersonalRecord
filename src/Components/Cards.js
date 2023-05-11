@@ -14,20 +14,24 @@ const Cards = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(null);
 
-  const fetchCards = useCallback((page) => {
-    setIsLoading(true);
-    client
-      .get(`${BASE_URL}${URL}${page}`)
-      .then(({ data }) => {
-        if (page === 3) throw new Error("여기서 에러 발생!");
-        setCards((prev) => [...prev, ...data]);
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        setIsError(err.message);
-        setIsLoading(false);
-      });
-  }, []);
+  const fetchCards = useCallback(
+    (page) => {
+      if (isError) return;
+      setIsLoading(true);
+      client
+        .get(`${BASE_URL}${URL}${page}`)
+        .then(({ data }) => {
+          if (page === 3) throw new Error("여기서 에러 발생!");
+          setCards((prev) => [...prev, ...data]);
+          setIsLoading(false);
+        })
+        .catch((err) => {
+          setIsError(err.message);
+          setIsLoading(false);
+        });
+    },
+    [isError]
+  );
 
   const loadMore = () => {
     setPage((prev) => prev + 1);
